@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from pydantic import computed_field
+from pydantic.v1 import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 ENV_PATH = Path(__file__).resolve().parent.parent.parent.parent / ".env"
 

@@ -1,10 +1,10 @@
 from datetime import datetime
 
 
-from sqlalchemy import Integer, String, DateTime, func
+from sqlalchemy import String, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.database import Base
+from src.db.database import Base
 
 
 class User(Base):
@@ -16,3 +16,8 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
+    subscriptions: Mapped[list["Subscription"]] = relationship(back_populates="user")
+    notifications: Mapped[list["Notification"]] = relationship(back_populates="user")
+    likes: Mapped[list["Like"]] = relationship(back_populates="user")
+    comments: Mapped[list["Comment"]] = relationship(back_populates="user")
+    views: Mapped[list["View"]] = relationship(back_populates="user")
