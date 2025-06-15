@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import Integer, DateTime, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.db.database import Base
+from db.database import Base
 
 post_tags = Table(
     "post_tags",
