@@ -1,9 +1,41 @@
-version: "3.9"
+version: "3.8"
+
 
 services:
-  redis:
-  postgres:
   backend:
-  frontend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: yusupov_backend
+    env_file:
+      - ./.env
+    volumes:
+      - ./backend:/app
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - PYTHONPATH=/app/src
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - backend-net
+
+  postgres:
+    image: postgres:17
+    container_name: yusupov_db
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-net
+
 
 networks:
+  backend-net:
