@@ -14,7 +14,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(25), unique=True, index=True)
     email: Mapped[str] = mapped_column(unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now())
 
     subscriptions: Mapped[list["Subscription"]] = relationship(back_populates="user")
     notifications: Mapped[list["Notification"]] = relationship(back_populates="user")
