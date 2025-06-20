@@ -14,21 +14,21 @@ class AdminServices:
         self.admin_repo = admin_repo
 
     async def create(self, admin_auth):
-        admin_create = await self.admin_repo.create(admin_auth)
-        return AdminAuth.model_validate(admin_create, from_attributes=True)
+        admin = await self.admin_repo.create(admin_auth)
+        return AdminAuth.model_validate(admin, from_attributes=True)
 
-    async def get_admin(self, email: str):
-        get_admin_repo = await self.admin_repo.get_admin(email=email)
-        return AdminInfo.model_validate(get_admin_repo, from_attributes=True)
+    async def get_admin(self, admin_id: int):
+        admin = await self.admin_repo.get_admin(admin_id=admin_id)
+        return AdminInfo.model_validate(admin, from_attributes=True)
 
-    async def login(self, email: str):
-        admin = await self.admin_repo.get_admin(email)
+    async def login(self, admin_id: int):
+        admin = await self.admin_repo.get_admin(admin_id=admin_id)
         return admin
+
 
 async def get_admin_services(
     session: AsyncSession = Depends(get_async_session)
 ) -> AdminServices:
     admin_repo = AdminRepository(session=session)
-
     return AdminServices(admin_repo=admin_repo)
 

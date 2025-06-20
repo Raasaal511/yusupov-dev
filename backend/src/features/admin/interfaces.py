@@ -7,7 +7,5 @@ class AdminRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    async def get_admin(self, email):
+    async def get_admin(self, admin_id):
         pass
-
-

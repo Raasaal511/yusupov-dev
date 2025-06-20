@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class Token(BaseModel):
@@ -13,3 +13,10 @@ class TokenAdminData(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class TokenUserData(BaseModel):
+    user_email: str
+
+    class Config:
+        from_attributes: True

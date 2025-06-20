@@ -19,7 +19,6 @@ class AdminInfo(AdminBase):
     experience: str | None = None
 
 
-
 class AdminLogIn(BaseModel):
     email: EmailStr
 

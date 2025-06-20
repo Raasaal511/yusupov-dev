@@ -13,12 +13,14 @@ from jwt import InvalidTokenError
 
 from config.security import SECRET_KEY
 from features.admin.services import AdminServices, get_admin_services
-from features.auth.schemas import TokenAdminData
+from features.auth.schemas import TokenAdminData, TokenUserData
+from features.users.services import get_user_services, UserServices
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
+        """Create access token with lifetime 15 minute"""
         encode = data.copy()
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
@@ -33,16 +35,37 @@ async def get_current_admin(
         token: Annotated[str, Depends(oauth2_scheme)],
         services: AdminServices = Depends(get_admin_services)
 ):
+    """Return current admin"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         admin_email = payload.get("sub")
         if admin_email is None:
-            raise HTTPException(status_code=401, detail="Could not validate credentials")
+            raise HTTPException(status_code=401, detail="Not Authenticated")
         token_admin_data = TokenAdminData(admin_email=admin_email)
-    except InvalidTokenError as e:
-        raise HTTPException(status_code=401, detail=f"Could not validate credentials: {e}")
+    except InvalidTokenError:
+        raise HTTPException(status_code=401, detail=f"Could not validate credentials")
 
     admin = services.get_admin(email=token_admin_data.admin_email)
     if admin is None:
-        raise HTTPException(status_code=401, detail=f"Could not validate credentials")
+        raise HTTPException(status_code=401, detail=f"Admin is not found")
     return admin
+
+
+async def get_current_user(
+        token: Annotated[str, Depends(oauth2_scheme)],
+        services: UserServices = Depends(get_user_services),
+):
+    """Return current user"""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_email = payload.get("sub")
+        if user_email is None:
+            raise HTTPException(status_code=401, detail="Not Authenticated")
+        token_user_admin = TokenUserData(user_email=user_email)
+    except InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Could not validate credentials")
+
+    user = services.get_user(email=token_user_admin.user_email)
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user

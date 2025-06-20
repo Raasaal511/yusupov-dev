@@ -5,7 +5,7 @@ from sqlalchemy.exc import NoResultFound, SQLAlchemyError
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from features.admin.excetions import AdminNotFoundError
+from features.admin.exceptions import AdminNotFoundError
 from features.admin.models import Admin
 from features.auth.security import bcrypt_password
 from features.admin.schemas import AdminAuth
@@ -31,34 +31,17 @@ class AdminRepository(AdminRepositoryInterface):
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=f"Database error: {e}")
 
-    async def get_admin(self, email: str) -> Admin:
+    async def get_admin(self, admin_id: int) -> Admin:
         try:
-            query = select(Admin).where(Admin.email == email)
+            query = select(Admin).where(Admin.id == admin_id)
             result = await self.session.execute(query)
             admin = result.scalars().first()
             if not admin:
-                raise HTTPException(status_code=400, detail="Amdin not found or you not have permission")
+                raise HTTPException(status_code=404, detail="Amdin not found or you not have permission")
             return admin
 
         except NoResultFound:
-            raise AdminNotFoundError(f"Admin with  email {email} not found")
-        except SQLAlchemyError as e:
-            raise HTTPException(
-            status_code=500,
-            detail=f"Database error: {str(e)}"
-            )
-
-    async def login(self, email: str):
-        try:
-            query = select(Admin).where(Admin.email == email)
-            result = await self.session.execute(query)
-            admin = result.scalars().first()
-            if not admin:
-                raise HTTPException(status_code=400, detail="Amdin not found or you not have permission")
-            return admin
-
-        except NoResultFound:
-            raise AdminNotFoundError(f"Admin with  email {email} not found")
+            raise AdminNotFoundError(status_code=404, detail=f"Admin not found")
         except SQLAlchemyError as e:
             raise HTTPException(
             status_code=500,
