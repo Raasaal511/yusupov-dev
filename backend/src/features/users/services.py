@@ -19,12 +19,12 @@ class UserServices:
         user = await self.user_repo.get_user(user_id=user_id)
         return UserBase.model_validate(user, from_attributes=True)
 
-    async def login(self, user_id: int):
-        user = await self.user_repo.get_user(user_id=user_id)
-        return user
+    async def login(self, email: str):
+        return await self.user_repo.login(email=email)
 
-    async def get_login(self):
-        ...
+    async def get_user_profile(self, user_id: int):
+        user = await self.user_repo.get_user(user_id=user_id)
+        return UserBase.model_validate(user, from_attributes=True)
 
 
 async def get_user_services(

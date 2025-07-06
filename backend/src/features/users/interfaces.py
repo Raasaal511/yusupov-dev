@@ -8,9 +8,13 @@ class UserRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    async def get_user(self, user_id):
+    async def get_user(self, user_id: int):
         pass
 
     @abstractmethod
-    async def get_profile(self,):
-        ...
+    async def login(self, email: str):
+        pass
+
+    @abstractmethod
+    async def get_profile(self):
+        pass

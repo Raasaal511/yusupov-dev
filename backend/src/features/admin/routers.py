@@ -16,8 +16,16 @@ async def create_admin(
     return await services.create(admin_auth=admin_auth)
 
 
-@admin_app.get("/profile/", response_model=AdminInfo)
+@admin_app.get("/profile/me/", response_model=AdminInfo)
 async def get_admin(
         current_admin: AdminInfo = Depends(get_current_admin),
 ):
-    return await current_admin
+    return current_admin
+
+
+@admin_app.get('/{admin_id}/', response_model=AdminInfo)
+async def get_admin_profile(
+        admin_id: int,
+        services: AdminServices = Depends(get_admin_services)
+):
+    return await services.get_admin(admin_id=admin_id)

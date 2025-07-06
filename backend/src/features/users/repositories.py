@@ -29,14 +29,37 @@ class UserRepository(UserRepositoryInterface):
         except SQLAlchemyError:
             raise HTTPException(status_code=500, detail="Wrong when create user")
 
+    async def get_user_by_id(self, user_id: int) -> User:
+        query = select(User).where(User.id == user_id)
+        result = await self.session.execute(query)
+        user = result.scalars().first()
+        if not user:
+            raise HTTPException(status_code=404, detail='User not found')
+        return user
+
+    async def get_user_by_email(self, email:str) -> User:
+        query = select(User).where(User.email == email)
+        result = await self.session.execute(query)
+        user = result.scalars().first()
+        if not user:
+            raise HTTPException(status_code=404, detail='User not found')
+        return user
+
     async def get_user(self, user_id: int):
         try:
-            query = select(User).where(User.id == user_id)
-            result = await self.session.execute(query)
-            user = result.scalars().first()
-            if not user:
-                raise HTTPException(status_code=404, detail='User not found')
+            user = await self.get_user_by_id(user_id=user_id)
             return user
+        except NoResultFound:
+            raise HTTPException(status_code=404, detail='User not found')
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Database error: {str(e)}"
+            )
+
+    async def login(self, email: str):
+        try:
+            user = self.get_user_by_email(email=email)
         except NoResultFound:
             raise HTTPException(status_code=404, detail='User not found')
         except SQLAlchemyError as e:

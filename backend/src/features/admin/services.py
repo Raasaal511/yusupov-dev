@@ -21,8 +21,8 @@ class AdminServices:
         admin = await self.admin_repo.get_admin(admin_id=admin_id)
         return AdminInfo.model_validate(admin, from_attributes=True)
 
-    async def login(self, admin_id: int):
-        admin = await self.admin_repo.get_admin(admin_id=admin_id)
+    async def login(self, email: str):
+        admin = await self.admin_repo.login(email=email)
         return admin
 
 

@@ -16,8 +16,14 @@ async def create_user(
 
 
 @user_app.get(f"/profile/me/")
-async def get_user(
+async def get_profile(
         current_user: UserBase = Depends(get_current_user)
 ):
     return await current_user
+
+
+@user_app.get("/{user_id}/")
+async def get_user_profile(user_id: int, services: UserServices = Depends(get_user_services)):
+    return await services.get_user_profile(user_id=user_id)
+
 

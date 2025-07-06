@@ -22,7 +22,7 @@ class AdminRepository(AdminRepositoryInterface):
                 email=admin_auth.email,
                 first_name=admin_auth.first_name,
                 last_name=admin_auth.last_name,
-                password_hash=bcrypt_password(admin_auth.password)
+                password_hash=bcrypt_password(admin_auth.password_hash)
             )
             self.session.add(admin)
             await self.session.commit()
@@ -31,15 +31,38 @@ class AdminRepository(AdminRepositoryInterface):
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=f"Database error: {e}")
 
+    async def get_admin_by_id(self, admin_id: int) -> Admin:
+        query = select(Admin).where(Admin.id == admin_id)
+        result = await self.session.execute(query)
+        admin = result.scalars().first()
+        if not admin:
+            raise HTTPException(status_code=404, detail="Amdin not found or you not have permission")
+        return admin
+
+    async def get_admin_by_email(self, email: str) -> Admin:
+        query = select(Admin).where(Admin.email == email)
+        result = await self.session.execute(query)
+        admin = result.scalars().first()
+        if not admin:
+            raise HTTPException(status_code=404, detail="Admin not found or you not have permission")
+        return admin
+
     async def get_admin(self, admin_id: int) -> Admin:
         try:
-            query = select(Admin).where(Admin.id == admin_id)
-            result = await self.session.execute(query)
-            admin = result.scalars().first()
-            if not admin:
-                raise HTTPException(status_code=404, detail="Amdin not found or you not have permission")
+            admin = await self.get_admin_by_id(admin_id=admin_id)
             return admin
+        except NoResultFound:
+            raise AdminNotFoundError(status_code=404, detail=f"Admin not found")
+        except SQLAlchemyError as e:
+            raise HTTPException(
+            status_code=500,
+            detail=f"Database error: {str(e)}"
+            )
 
+    async def login(self, email: str) -> Admin:
+        try:
+            admin = await self.get_admin_by_email(email=email)
+            return admin
         except NoResultFound:
             raise AdminNotFoundError(status_code=404, detail=f"Admin not found")
         except SQLAlchemyError as e:
