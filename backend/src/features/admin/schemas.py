@@ -14,6 +14,7 @@ class AdminBase(BaseModel):
         from_attributes = True
 
 class AdminInfo(AdminBase):
+    id: int | None = None
     photo_url: str | None = None
     bio: str | None = None
     experience: str | None = None

@@ -1,8 +1,7 @@
-
 from fastapi import HTTPException
+
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound, SQLAlchemyError
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from features.admin.exceptions import AdminNotFoundError
@@ -36,7 +35,7 @@ class AdminRepository(AdminRepositoryInterface):
         result = await self.session.execute(query)
         admin = result.scalars().first()
         if not admin:
-            raise HTTPException(status_code=404, detail="Amdin not found or you not have permission")
+            raise HTTPException(status_code=404, detail="Admin not found or you not have permission")
         return admin
 
     async def get_admin_by_email(self, email: str) -> Admin:
@@ -54,10 +53,7 @@ class AdminRepository(AdminRepositoryInterface):
         except NoResultFound:
             raise AdminNotFoundError(status_code=404, detail=f"Admin not found")
         except SQLAlchemyError as e:
-            raise HTTPException(
-            status_code=500,
-            detail=f"Database error: {str(e)}"
-            )
+            raise HTTPException(status_code=500,detail=f"Database error: {e}")
 
     async def login(self, email: str) -> Admin:
         try:
@@ -66,7 +62,4 @@ class AdminRepository(AdminRepositoryInterface):
         except NoResultFound:
             raise AdminNotFoundError(status_code=404, detail=f"Admin not found")
         except SQLAlchemyError as e:
-            raise HTTPException(
-            status_code=500,
-            detail=f"Database error: {str(e)}"
-            )
+            raise HTTPException(status_code=500,detail=f"Database error: {e}")

@@ -12,6 +12,7 @@ admin_app = APIRouter(prefix="/admin", tags=["Admin"])
 async def create_admin(
         admin_auth: AdminAuth,
         services: AdminServices = Depends(get_admin_services),
+
 ):
     return await services.create(admin_auth=admin_auth)
 

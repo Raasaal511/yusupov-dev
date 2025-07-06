@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum as PyEnum
 
 from sqlalchemy import DateTime, ForeignKey, Enum
@@ -24,7 +24,7 @@ class Admin(Base):
     bio: Mapped[str] = mapped_column(nullable=True)
     experience: Mapped[str] = mapped_column(nullable=True)
     password_hash: Mapped[str] = mapped_column()
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     social_links: Mapped[list["SocialLink"]] = relationship(back_populates="admin")
     posts: Mapped[list["Post"]] = relationship(back_populates="admin")
@@ -44,7 +44,7 @@ class AdminNotification(Base):
     notification_type: Mapped[AdminNotificationType] = mapped_column(Enum(AdminNotificationType))
     related_id: Mapped[int] = mapped_column(nullable=True)
     is_read: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     admin: Mapped["Admin"] = relationship(back_populates="notifications")
 
