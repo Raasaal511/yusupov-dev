@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from datetime import datetime, timezone
 
 from sqlalchemy import Integer, DateTime, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -22,8 +21,8 @@ class Post(Base):
     content: Mapped[str] = mapped_column()
     category_id: Mapped[int] = mapped_column(Integer, ForeignKey('categories.id'))
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey('admins.id'))
-    playlist_id: Mapped[int] = mapped_column(Integer, ForeignKey("playlists.id"))
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    playlist_id: Mapped[int] = mapped_column(Integer, ForeignKey("playlists.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     likes: Mapped[list["Like"]] =relationship(back_populates="post")
     comments: Mapped[list["Comment"]] = relationship(back_populates="post")
@@ -40,7 +39,7 @@ class Playlist(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column()
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey("admins.id"))
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     posts: Mapped[list["Post"]] = relationship(back_populates="playlist")
     admin: Mapped["Admin"] = relationship(back_populates="playlists")
@@ -52,7 +51,7 @@ class Category(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(unique=True, index=True)
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey("admins.id"))
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     posts: Mapped[list["Post"]] = relationship(back_populates="category")
     subscriptions: Mapped[list["Subscription"]] = relationship(back_populates="category")
@@ -65,7 +64,7 @@ class Tag(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(unique=True, index=True)
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey("admins.id"))
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     posts: Mapped[list["Post"]] = relationship(secondary=post_tags, back_populates="tags")
     admin: Mapped["Admin"] = relationship(back_populates="tags")
