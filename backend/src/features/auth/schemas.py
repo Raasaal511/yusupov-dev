@@ -8,15 +8,9 @@ class Token(BaseModel):
     class Config:
         from_attributes = True
 
-class TokenAdminData(BaseModel):
-    admin_email: str
+class TokenData(BaseModel):
+    id: int
 
     class Config:
         from_attributes = True
 
-
-class TokenUserData(BaseModel):
-    user_email: str
-
-    class Config:
-        from_attributes: True

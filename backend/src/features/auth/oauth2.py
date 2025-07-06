@@ -13,7 +13,7 @@ from jwt import InvalidTokenError
 
 from config.security import SECRET_KEY
 from features.admin.services import AdminServices, get_admin_services
-from features.auth.schemas import TokenAdminData, TokenUserData
+from features.auth.schemas import TokenData
 from features.users.services import get_user_services, UserServices
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -38,14 +38,14 @@ async def get_current_admin(
     """Return current admin"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        admin_email = payload.get("sub")
-        if admin_email is None:
+        admin_id = payload.get("sub")
+        if admin_id is None:
             raise HTTPException(status_code=401, detail="Not Authenticated")
-        token_admin_data = TokenAdminData(admin_email=admin_email)
+        token_admin_data = TokenData(id=admin_id)
     except InvalidTokenError:
         raise HTTPException(status_code=401, detail=f"Could not validate credentials")
 
-    admin = services.get_admin(email=token_admin_data.admin_email)
+    admin = await services.get_admin(admin_id=token_admin_data.id)
     if admin is None:
         raise HTTPException(status_code=401, detail=f"Admin is not found")
     return admin
@@ -58,14 +58,14 @@ async def get_current_user(
     """Return current user"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        user_email = payload.get("sub")
-        if user_email is None:
+        user_id = payload.get("sub")
+        if user_id is None:
             raise HTTPException(status_code=401, detail="Not Authenticated")
-        token_user_admin = TokenUserData(user_email=user_email)
+        token_user_data= TokenData(id=user_id)
     except InvalidTokenError:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
-    user = services.get_user(email=token_user_admin.user_email)
+    user = await services.get_user(user_id=token_user_data.id)
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
     return user
