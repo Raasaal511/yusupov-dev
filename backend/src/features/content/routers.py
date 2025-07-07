@@ -4,9 +4,24 @@ from fastapi.params import Depends
 from features.admin.schemas import AdminInfo
 from features.auth.oauth2 import get_current_admin
 from features.content.repositories import CategoryRepository
-from features.content.schemas import PostCreate, PlaylistBase, PlaylistCreate, CategoryBase
-from features.content.services import PostServices, PlaylistServices
-from features.content.dependencies import get_post_services, get_playlist_services, get_category_services
+from features.content.schemas import (PostCreate,
+                                      PlaylistBase,
+                                      PlaylistCreate,
+                                      CategoryBase,
+                                      CategoryCreate,
+                                      TagBase,
+                                      TagCreate,
+                                      )
+from features.content.services import (PostServices,
+                                       PlaylistServices,
+                                       CategoryServices,
+                                       TagServices,
+                                       )
+from features.content.dependencies import (get_post_services,
+                                           get_playlist_services,
+                                           get_category_services,
+                                           get_tag_services,
+                                           )
 
 content_app = APIRouter(prefix="/content", tags=["Content"])
 
@@ -19,7 +34,7 @@ async def get_posts(
 
 
 @content_app.get("/posts/{post_id}")
-async def get_posts(
+async def get_post(
         post_id: int,
         services: PostServices = Depends(get_post_services),
 ):
@@ -64,3 +79,31 @@ async def get_categories(
         services: CategoryRepository = Depends(get_category_services)
 ):
     return await services.get_categories()
+
+
+@content_app.post("/categories/", response_model=CategoryBase)
+async def create_category(
+        category_create: CategoryCreate,
+        current_admin: AdminInfo = Depends(get_current_admin),
+        services: CategoryServices = Depends(get_category_services),
+):
+    return await services.create(admin_id=current_admin.id, create_category=category_create)
+
+
+@content_app.get("/tags/", response_model=list[TagBase])
+async def get_tags(
+        services: TagServices = Depends(get_tag_services)
+):
+    return await services.get_tags()
+
+
+@content_app.post("/tags/", response_model=TagCreate)
+async def create_tag(
+        tag_create: TagCreate,
+        current_admin: AdminInfo = Depends(get_current_admin),
+        services: TagServices = Depends(get_tag_services)
+):
+    return await services.create(admin_id=current_admin.id, tag_create=tag_create)
+
+
+

@@ -4,7 +4,8 @@ from features.content.interfaces import (PostRepositoryInterface,
                                          TagRepositoryInterface)
 from features.content.schemas import (PostCreate,
                                       PlaylistCreate,
-                                      CategoryCreate)
+                                      CategoryCreate,
+                                      TagCreate)
 
 
 class PostServices:
@@ -50,16 +51,19 @@ class CategoryServices:
         return categories
 
     async def create(self, admin_id: int, create_category: CategoryCreate):
-        category_create = self.category_repo.create(admin_id=admin_id, create_category=create_category)
+        category_create = await self.category_repo.create(admin_id=admin_id, create_category=create_category)
         return category_create
+
 
 class TagServices:
     def __init__(self, tag_repo: TagRepositoryInterface):
         self.tag_repo = tag_repo
 
     async def get_tags(self):
-        pass
+        tags = await self.tag_repo.get_tags()
+        return tags
 
-    def create(self):
-        pass
+    def create(self, admin_id: int, tag_create: TagCreate):
+        create_tag = self.tag_repo.create(admin_id=admin_id, tag_create=tag_create)
+        return create_tag
 
