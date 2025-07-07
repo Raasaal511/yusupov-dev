@@ -1,13 +1,10 @@
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from db.database import get_async_session
 from features.content.interfaces import (PostRepositoryInterface,
                                          PlaylistRepositoryInterface,
                                          CategoryRepositoryInterface,
                                          TagRepositoryInterface)
-from features.content.repositories import PostRepository
-from features.content.schemas import PostUpdate, PostBase, PostCreate, PlaylistBase, PlaylistCreate
+from features.content.schemas import (PostCreate,
+                                      PlaylistCreate,
+                                      CategoryCreate)
 
 
 class PostServices:
@@ -25,10 +22,6 @@ class PostServices:
     async def create(self, admin_id: int, post_create: PostCreate) -> PostCreate:
         post = await self.post_repo.create(admin_id=admin_id, post_create=post_create)
         return post
-
-    # async def update(self, admin_id: int, post_id: int, post_update: PostUpdate):
-    #     post = await self.post_repo.update(admin_id=admin_id, post_id=post_id, post_update=post_update)
-    #     return PostBase.model_validate(post, from_attributes=True)
 
 
 class PlaylistServices:
@@ -53,14 +46,12 @@ class CategoryServices:
         self.category_repo = category_repo
 
     async def get_categories(self):
-        pass
+        categories = await self.category_repo.get_categories()
+        return categories
 
-    async def get_category(self):
-        pass
-
-    async def create(self):
-        pass
-
+    async def create(self, admin_id: int, create_category: CategoryCreate):
+        category_create = self.category_repo.create(admin_id=admin_id, create_category=create_category)
+        return category_create
 
 class TagServices:
     def __init__(self, tag_repo: TagRepositoryInterface):

@@ -57,6 +57,11 @@ class UserRepository(UserRepositoryInterface):
                 detail=f"Database error: {str(e)}"
             )
 
+    async def get_users(self):
+        result = await self.session.execute(select(User))
+        users = result.scalars().all()
+        return users
+        
     async def login(self, email: str):
         try:
             user = self.get_user_by_email(email=email)

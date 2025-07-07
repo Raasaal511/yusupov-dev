@@ -64,6 +64,10 @@ class CategoryRepositoryInterface(ABC):
     async def delete(self, admin_id: int, category_id: int):
         pass
 
+    @abstractmethod
+    async def get_categories(self):
+        pass
+
 
 class TagRepositoryInterface(ABC):
     """Abstract method for Tag"""
@@ -77,4 +81,8 @@ class TagRepositoryInterface(ABC):
 
     @abstractmethod
     async def delete(self, admin_id: int, tag_id: int):
+        pass
+
+    @abstractmethod
+    async def get_tags(self):
         pass

@@ -22,6 +22,13 @@ async def get_profile(
     return await current_user
 
 
+@user_app.get("/")
+async def get_users(
+    services: UserServices = Depends(get_user_services)
+):
+    return await services.get_users()
+    
+    
 @user_app.get("/{user_id}/")
 async def get_user_profile(user_id: int, services: UserServices = Depends(get_user_services)):
     return await services.get_user_profile(user_id=user_id)
