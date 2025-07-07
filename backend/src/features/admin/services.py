@@ -5,7 +5,6 @@ from db.database import get_async_session
 from features.admin.schemas import AdminAuth, AdminInfo, AdminBase, AdminLogIn
 
 from features.admin.repositories import AdminRepository
-
 from features.admin.interfaces import AdminRepositoryInterface
 
 
