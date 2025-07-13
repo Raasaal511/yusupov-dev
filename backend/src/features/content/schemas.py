@@ -16,6 +16,7 @@ class PostCreate(BaseModel):
     content: str
     category_id: int
 
+
 class PostUpdate(BaseModel):
     title: str
     content: str

@@ -4,7 +4,7 @@ from enum import Enum as PyEnum
 from sqlalchemy import DateTime, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.db.database import Base
+from db.database import Base
 
 
 class AdminNotificationType(PyEnum):
