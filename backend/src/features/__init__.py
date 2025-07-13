@@ -1,6 +1,6 @@
-from db.database import Base
+from src.db.database import Base
 
-from features.admin.models import Admin, AdminNotification, SocialLink
-from features.content.models import Post, Playlist, Category, Tag
-from features.interactions.models import Subscription, Like, Notification, Comment, View
-from features.users.models import User
+from src.features.admin.models import Admin, AdminNotification, SocialLink
+from src.features.content.models import Post, Playlist, Category, Tag
+from src.features.interactions.models import Subscription, Like, Notification, Comment, View
+from src.features.users.models import User

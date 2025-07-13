@@ -10,7 +10,7 @@ from sqlalchemy import (Integer,
                         Enum)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.database import Base
+from src.db.database import Base
 
 
 class NotificationType(PyEnum):
@@ -81,7 +81,7 @@ class Notification(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     message: Mapped[str] = mapped_column()
-    notification_type: Mapped[NotificationType] = mapped_column(Enum(NotificationType))
+    notification_type: Mapped[NotificationType] = mapped_column(Enum(NotificationType, name="notification_type"))
     is_read: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 

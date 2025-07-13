@@ -28,7 +28,6 @@ class PostRepository(PostRepositoryInterface):
                 content=post_create.content,
                 author_id=admin_id,
                 category_id=post_create.category_id,
-                playlist_id=post_create.playlist_id,
             )
             self.session.add(post)
             await self.session.commit()
@@ -36,6 +35,8 @@ class PostRepository(PostRepositoryInterface):
             return post
         except SQLAlchemyError as e:
             raise HTTPException(status_code=500, detail=f"Database error: {e}")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error create post: {e}")
 
     async def update(self, admin_id: int, post_id: int, post_update: PostUpdate) -> Post:
         pass
@@ -107,8 +108,8 @@ class CategoryRepository(CategoryRepositoryInterface):
     async def create(self, admin_id: int, category_create: CategoryCreate) -> Category:
         category = Category(
             name=category_create.name,
-            author=admin_id,
-            create_at=datetime.now(timezone.utc)
+            author_id=admin_id,
+            created_at=datetime.now(timezone.utc)
         )
         self.session.add(category)
         await self.session.commit()

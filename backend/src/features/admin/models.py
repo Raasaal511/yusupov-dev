@@ -4,7 +4,7 @@ from enum import Enum as PyEnum
 from sqlalchemy import DateTime, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.database import Base
+from src.db.database import Base
 
 
 class AdminNotificationType(PyEnum):
@@ -41,7 +41,7 @@ class AdminNotification(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     admin_id: Mapped[int] = mapped_column(ForeignKey("admins.id"))
     message: Mapped[str] = mapped_column()
-    notification_type: Mapped[AdminNotificationType] = mapped_column(Enum(AdminNotificationType))
+    notification_type: Mapped[AdminNotificationType] = mapped_column(Enum(AdminNotificationType, name="admin_notification_type"))
     related_id: Mapped[int] = mapped_column(nullable=True)
     is_read: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))

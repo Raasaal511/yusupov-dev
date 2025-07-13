@@ -41,7 +41,7 @@ async def get_post(
     return await services.get_post(post_id=post_id)
 
 
-@content_app.post("/posts/")
+@content_app.post("/posts/", response_model=PostCreate)
 async def update_post(
         post_create: PostCreate,
         current_admin: AdminInfo = Depends(get_current_admin),
@@ -87,7 +87,7 @@ async def create_category(
         current_admin: AdminInfo = Depends(get_current_admin),
         services: CategoryServices = Depends(get_category_services),
 ):
-    return await services.create(admin_id=current_admin.id, create_category=category_create)
+    return await services.create(admin_id=current_admin.id, category_create=category_create)
 
 
 @content_app.get("/tags/", response_model=list[TagBase])
@@ -104,6 +104,4 @@ async def create_tag(
         services: TagServices = Depends(get_tag_services)
 ):
     return await services.create(admin_id=current_admin.id, tag_create=tag_create)
-
-
 

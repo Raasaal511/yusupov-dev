@@ -53,7 +53,7 @@ class PlaylistRepositoryInterface(ABC):
 class CategoryRepositoryInterface(ABC):
     """Abstract method for Category"""
     @abstractmethod
-    async def create(self, admin_id: int, create_category):
+    async def create(self, admin_id: int, category_create):
         pass
 
     @abstractmethod

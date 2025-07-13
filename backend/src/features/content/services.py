@@ -50,8 +50,8 @@ class CategoryServices:
         categories = await self.category_repo.get_categories()
         return categories
 
-    async def create(self, admin_id: int, create_category: CategoryCreate):
-        category_create = await self.category_repo.create(admin_id=admin_id, create_category=create_category)
+    async def create(self, admin_id: int, category_create: CategoryCreate):
+        category_create = await self.category_repo.create(admin_id=admin_id, category_create=category_create)
         return category_create
 
 

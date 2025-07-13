@@ -15,10 +15,6 @@ class PostCreate(BaseModel):
     title: str
     content: str
     category_id: int
-    author_id: int
-    tags: None = None
-    playlist_id: int | None = None
-
 
 class PostUpdate(BaseModel):
     title: str
@@ -40,11 +36,10 @@ class PlaylistCreate(PlaylistBase):
 class CategoryBase(BaseModel):
     id: int
     name: str
-    author_id: int
 
 
-class CategoryCreate(CategoryBase):
-    pass
+class CategoryCreate(BaseModel):
+    name: str
 
 
 class TagBase(BaseModel):

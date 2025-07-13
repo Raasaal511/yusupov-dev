@@ -21,5 +21,3 @@ async def get_access_token(
     if verify_admin_data(form_data.username, form_data.password):
         return await get_admin_token(form_data=form_data, session=session)
     return await get_user_token(form_data=form_data, session=session)
-
-

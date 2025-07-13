@@ -21,7 +21,7 @@ async def get_admin_token(
         raise HTTPException(status_code=401, detail="Wrong password")
     access_token = create_access_token(
         data={
-            "sub": admin.id,
+            "sub": str(admin.id),
             "email": admin.email,
             "is_admin": True,
         })
@@ -39,7 +39,7 @@ async def get_user_token(
         raise HTTPException(status_code=401, detail="Wrong password")
     access_token = create_access_token(
         data={
-            "sub": user.id,
+            "sub": str(user.id),
             "email": user.email,
             "username": user.username,
         })
