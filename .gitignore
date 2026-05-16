@@ -1,0 +1,23 @@
+# base
+.idea
+.env
+
+# vue
+node_modules
+.vscode
+
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+/dist
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# python
+__pycache__/
